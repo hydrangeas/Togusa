@@ -7,28 +7,6 @@ OUTPUT_PATH=./ass
 #出力ファイル
 ASS_FILE=${OUTPUT_PATH}/super_${MOVIE_FRAME}.ass
 
-#ASSヘッダ
-ASS_HEADER=`cat <<EO_ASS_HEADER
-[Script Info]
-Title: test ass
-Synch Point: 2
-ScriptType: v4.00+
-Collisions: Normal
-ScaledBorderAndShadow: No
-PlayResX: 1920
-PlayResY: 1080
-Timer: 3.000
-WrapStyle: 0
-
-[V4+ Styles]
-Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,MS Gothic,50,&H00ffffff,&H0000ffff,&H00000000,&H80000000,-1,-1,0,0,200,200,0,0.00,1,2,3,2,20,20,40,128
-
-[Events]
-Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
-EO_ASS_HEADER
-`
-
 #動画のフレーム数によって開始と終了時間を変更する
 #(切り出しの際にそのフレーム数目が入っている)
 # ex) 24fps=46.1ms毎に切り替わるので、0〜30ms:frame-0 40〜70ms:frame-1 ..
@@ -50,7 +28,27 @@ esac
 #出力先作成
 mkdir -p $OUTPUT_PATH
 #ヘッダ出力
-echo $ASS_HEADER > $ASS_FILE
+#echo $ASS_HEADER > $ASS_FILE
+#ASSヘッダ
+cat <<EO_ASS_HEADER > $ASS_FILE
+[Script Info]
+Title: test ass
+Synch Point: 2
+ScriptType: v4.00+
+Collisions: Normal
+ScaledBorderAndShadow: No
+PlayResX: 720
+PlayResY: 400
+Timer: 100.000
+WrapStyle: 0
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,MS Gothic,50,&H00ffffff,&H0000ffff,&H00000000,&H80000000,-1,-1,0,0,200,200,0,0.00,1,2,3,9,20,20,40,128
+
+[Events]
+Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
+EO_ASS_HEADER
 
 #0〜9時間まで
 for h in {0..9}
@@ -65,7 +63,7 @@ do
       for ((f=0; f < $MOVIE_FRAME; f++));
       do
         #字幕の出力形式
-        printf "Dialogue: 0,%d:%03d:%02d.%02d,%d:%02d:%02d.%02d, Voice01,,0000,0000,0000,,%02d:%02d:%02d:%02d\n" $h $m $s ${start_time[$f]} $h $m $s ${end_time[$f]} $h $m $s $f >> $ASS_FILE
+        printf "Dialogue: 0,%d:%03d:%02d.%02d,%d:%02d:%02d.%02d, Default,,0000,0000,0000,,%02d:%02d:%02d:%02d\n" $h $m $s ${start_time[$f]} $h $m $s ${end_time[$f]} $h $m $s $f >> $ASS_FILE
       done #for/フレーム
     done #for/秒
   done #for/分
